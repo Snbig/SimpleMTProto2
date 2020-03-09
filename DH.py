@@ -25,16 +25,3 @@ class DH:
         self.shared_key = self.private_key.exchange(load_der_public_key(peer_public_key, default_backend()))
         return self.shared_key
 
-
-if __name__ == '__main__':
-    d = DH()
-    private_key = d.gen_private()
-    peer_public = d.gen_public()
-    shared_key = d.gen_shared_key(peer_public)
-    print(d.shared_key)
-    c = DH()
-    c.dh_parameters = d.dh_parameters
-    c.gen_private()
-    c.gen_public()
-    c.gen_shared_key(c.public_key)
-    print(c.shared_key)
