@@ -32,7 +32,7 @@ class Oracle:
         padded_message = Oracle.pad(length.encode() + message)
         msg_key_large = hashlib.sha256(self.secret_key[88 + mode:120] + padded_message).digest()
         self.msg_key = msg_key_large[8:24]
-        kdf = KDF(self.secret_key, self.msg_key, "Enc")
+        kdf = KDF(self.secret_key, self.msg_key, mode)
         aes_key, aes_iv = kdf.KD()
         ige_encrypted = tgcrypto.ige256_encrypt(padded_message, aes_key, aes_iv)
         ige_encrypted_header_set = self.msg_key + ige_encrypted
@@ -44,7 +44,7 @@ class Oracle:
         else:
             mode = 0
         msg_key_from_cipher = message_key
-        kdf = KDF(self.secret_key, msg_key_from_cipher, "Enc")
+        kdf = KDF(self.secret_key, msg_key_from_cipher, mode)
         aes_key, aes_iv = kdf.KD()
         ige_decrypted = tgcrypto.ige256_decrypt(ciphertext[16:], aes_key, aes_iv)
         msg_key_large = hashlib.sha256(self.secret_key[88 + mode:120] + ige_decrypted).digest()
